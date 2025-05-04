@@ -1,0 +1,130 @@
+<!--
+  Calculateur de l'indice de Langelier (LSI)
+  Licence MIT
+  Développé pour Aqua Purify
+-->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculateur Langelier</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+      margin-top: 0.2rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.6rem;
+      background: #0077cc;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    #result {
+      margin-top: 2rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculateur de l’indice de Langelier</h1>
+
+    <label>pH mesuré :
+      <input type="number" id="ph" step="0.01" placeholder="ex : 7.4">
+    </label>
+
+    <label>Température (°C) :
+      <input type="number" id="temp" step="0.1" placeholder="ex : 20">
+    </label>
+
+    <label>Dureté calcique (mg/L Ca²⁺) :
+      <input type="number" id="hardness" step="1" placeholder="ex : 80">
+    </label>
+
+    <label>Alcalinité (mg/L CaCO₃) :
+      <input type="number" id="alkalinity" step="1" placeholder="ex : 100">
+    </label>
+
+    <label>TDS (mg/L) :
+      <input type="number" id="tds" step="1" placeholder="ex : 500">
+    </label>
+
+    <button onclick="calculateLSI()">Calculer l'indice</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function log10(val) {
+      return Math.log(val) / Math.LN10;
+    }
+
+    function calculateLSI() {
+      const ph = parseFloat(document.getElementById("ph").value);
+      const temp = parseFloat(document.getElementById("temp").value);
+      const hardness = parseFloat(document.getElementById("hardness").value);
+      const alkalinity = parseFloat(document.getElementById("alkalinity").value);
+      const tds = parseFloat(document.getElementById("tds").value);
+
+      if ([ph, temp, hardness, alkalinity, tds].some(isNaN)) {
+        document.getElementById("result").innerText = "⚠️ Veuillez remplir tous les champs.";
+        return;
+      }
+
+      const A = (log10(tds) - 1) / 10;
+      const B = -13.12 * log10(temp + 273) + 34.55;
+      const C = log10(hardness);
+      const D = log10(alkalinity);
+
+      const pHs = 9.3 + A + B - (C + D);
+      const lsi = ph - pHs;
+
+      let interpretation = "";
+      if (lsi > 0.5) interpretation = "Eau fortement incrustante";
+      else if (lsi > 0.0) interpretation = "Eau légèrement incrustante";
+      else if (lsi > -0.5) interpretation = "Eau légèrement corrosive";
+      else interpretation = "Eau corrosive";
+
+      document.getElementById("result").innerHTML =
+        `pHs estimé : ${pHs.toFixed(2)}<br>` +
+        `Indice de Langelier (LSI) : <strong>${lsi.toFixed(2)}</strong><br>` +
+        `Interprétation : <strong>${interpretation}</strong>`;
+    }
+  </script>
+</body>
+</html>
