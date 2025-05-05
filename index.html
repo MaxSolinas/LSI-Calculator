@@ -119,13 +119,13 @@ let interpretation = "";
 if (lsi < -0.5) {
   interpretation = "Corrosion importante";
 } else if (lsi < 0) {
-  interpretation = "Légèrement corrosive, sans formation de tartre";
+  interpretation = "Légèrement corrosive";
 } else if (Math.abs(lsi) < 0.01) {
-  interpretation = "Équilibrée (potentiel de corrosion localisée possible)";
+  interpretation = "Équilibrée";
 } else if (lsi < 0.5) {
   interpretation = "Légèrement entartrante et corrosive";
 } else if (lsi < 2.0) {
-  interpretation = "Entartrante, non corrosive";
+  interpretation = "Entartrante";
 } else {
   interpretation = "Forte tendance à l’entartrage";
 }
