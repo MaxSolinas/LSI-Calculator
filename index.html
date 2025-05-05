@@ -116,21 +116,20 @@
 
 let interpretation = "";
 
-if (lsi < -2.0) {
-  interpretation = "Corrosion très sévère";
-} else if (lsi < -0.5) {
+if (lsi < -0.5) {
   interpretation = "Corrosion importante";
-} else if (lsi < 0.0) {
+} else if (lsi < 0) {
   interpretation = "Légèrement corrosive, sans formation de tartre";
-} else if (lsi === 0.0) {
-  interpretation = "Équilibrée, mais corrosion localisée possible (pitting)";
+} else if (Math.abs(lsi) < 0.01) {
+  interpretation = "Équilibrée (potentiel de corrosion localisée possible)";
 } else if (lsi < 0.5) {
   interpretation = "Légèrement entartrante et corrosive";
 } else if (lsi < 2.0) {
-  interpretation = "Entartrante, mais non corrosive";
+  interpretation = "Entartrante, non corrosive";
 } else {
   interpretation = "Forte tendance à l’entartrage";
 }
+
 
 
       document.getElementById("result").innerHTML =
