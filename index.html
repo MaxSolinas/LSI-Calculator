@@ -1,14 +1,9 @@
-<!--
-  Calculateur de l'indice de Langelier (LSI)
-  Licence MIT
-  Développé pour Aqua Purify
--->
-
+<!-- Calculateur de l'indice de Langelier (LSI) avec double interprétation -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calculateur Langelier</title>
   <style>
     body {
@@ -65,23 +60,23 @@
     <h1>Calculateur de l’indice de Langelier</h1>
 
     <label>pH mesuré :
-      <input type="number" id="ph" step="0.01" placeholder="ex : 7.4">
+      <input type="number" id="ph" step="0.01" placeholder="ex : 7.4" />
     </label>
 
     <label>Température (°C) :
-      <input type="number" id="temp" step="0.1" placeholder="ex : 20">
+      <input type="number" id="temp" step="0.1" placeholder="ex : 20" />
     </label>
 
     <label>Dureté calcique (mg/L Ca²⁺) :
-      <input type="number" id="hardness" step="1" placeholder="ex : 80">
+      <input type="number" id="hardness" step="1" placeholder="ex : 80" />
     </label>
 
     <label>Alcalinité (mg/L CaCO₃) :
-      <input type="number" id="alkalinity" step="1" placeholder="ex : 100">
+      <input type="number" id="alkalinity" step="1" placeholder="ex : 100" />
     </label>
 
     <label>TDS (mg/L) :
-      <input type="number" id="tds" step="1" placeholder="ex : 500">
+      <input type="number" id="tds" step="1" placeholder="ex : 500" />
     </label>
 
     <button onclick="calculateLSI()">Calculer l'indice</button>
@@ -114,28 +109,35 @@
       const pHs = 9.3 + A + B - (C + D);
       const lsi = ph - pHs;
 
-let interpretation = "";
+      let interpretationCarrier = "";
+      if (lsi < -0.5) {
+        interpretationCarrier = "Corrosion sévère (eau agressive)";
+      } else if (lsi < 0) {
+        interpretationCarrier = "Légère corrosion, non entartrante";
+      } else if (lsi === 0) {
+        interpretationCarrier = "Équilibre — corrosion localisée possible";
+      } else if (lsi <= 0.5) {
+        interpretationCarrier = "Légèrement entartrante et corrosive";
+      } else if (lsi <= 2) {
+        interpretationCarrier = "Entartrante, non corrosive";
+      } else {
+        interpretationCarrier = "Fortement entartrante";
+      }
 
-if (lsi < -0.5) {
-  interpretation = "Corrosion importante";
-} else if (lsi < 0) {
-  interpretation = "Légèrement corrosive";
-} else if (Math.abs(lsi) < 0.01) {
-  interpretation = "Équilibrée";
-} else if (lsi < 0.5) {
-  interpretation = "Légèrement entartrante et corrosive";
-} else if (lsi < 2.0) {
-  interpretation = "Entartrante";
-} else {
-  interpretation = "Forte tendance à l’entartrage";
-}
-
-
+      let interpretationSimple = "";
+      if (lsi < 0) {
+        interpretationSimple = "Eau sous-saturée : tendance à dissoudre les couches protectrices (corrosive)";
+      } else if (lsi === 0) {
+        interpretationSimple = "Eau équilibrée : ni entartrante, ni corrosive";
+      } else {
+        interpretationSimple = "Eau sursaturée : tendance à former du calcaire (entartrante)";
+      }
 
       document.getElementById("result").innerHTML =
         `pHs estimé : ${pHs.toFixed(2)}<br>` +
-        `Indice de Langelier (LSI) : <strong>${lsi.toFixed(2)}</strong><br>` +
-        `Interprétation : <strong>${interpretation}</strong>`;
+        `Indice de Langelier (LSI) : <strong>${lsi.toFixed(2)}</strong><br><br>` +
+        `<u>Interprétation Carrier :</u><br><strong>${interpretationCarrier}</strong><br><br>` +
+        `<u>Interprétation simplifiée :</u><br><strong>${interpretationSimple}</strong>`;
     }
   </script>
 </body>
